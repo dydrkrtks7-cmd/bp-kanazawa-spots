@@ -7,10 +7,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-User-agent: Yeti
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-Sitemap: https://kanazawa-spots.pages.dev/sitemap.xml
+Sitemap: https://kanazawa-spots-guide.pbn-builder.xyz/sitemap.xml

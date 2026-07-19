@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "importedAt": "2026-07-03T07:40:59.773Z",
+  "campaignId": null,
+  "slug": "kanazawa-spots",
+  "adoptExisting": true,
+  "sourceType": "urlSnapshot",
+  "sourceUrl": "https://kanazawa-spots-guide.pbn-builder.xyz/",
+  "copiedFiles": 2,
+  "copiedBytes": 23397,
+  "fetchedAssets": 1,
+  "skippedAssets": 0,
+  "skippedSymlinks": 0
+}
