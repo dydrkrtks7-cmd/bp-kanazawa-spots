@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글 목록 (2/2) · kanazawa-spots</title>
+  <meta name="description" content="kanazawa-spots에 올라온 글 목록입니다.">
+  <link rel="canonical" href="https://kanazawa-spots-guide.pbn-builder.xyz/posts-2.html">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+ /* --- CSS Variables & Base Setup (Neon Void Theme) --- */
+ :root {
+ --color-primary: #000000;
+ --color-secondary: #ffffff;
+ --color-accent: #ff3b00; /* 강렬한 주황 레드 */
+ --font-raw: 'Impact', sans-serif;
+ --border-size: 4px;
+ }
+
+ /* --- Global Reset & Typography (Raw Type Focus) --- */
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ background-color: var(--color-primary);
+ color: var(--color-secondary);
+ font-family: var(--font-raw);
+ line-height: 1.35; /* 딱딱한 느낌을 살리기 위해 약간 단축 */
+ overflow-x: hidden; /* 가로 스크롤 방지 (필수) */
+ }
+
+ /* --- Layout & Spacing --- */
+ .container {
+ width: 100%;
+ padding: 72px var(--space-gap); /* 공간 설정 적용 */
+ }
+
+ section {
+ padding: 72px 0; /* 섹션 간 패딩 통일 */
+ }
+
+ /* Section Gap (주요 블록 간의 간격) - 더 강하게 밀어냄 */
+ .section-gap {
+ min-height: calc(120px + 72px); /* 기본 padding 72px + 여유분 */
+ margin-bottom: 120px; /* 섹션 하댠 간격 */
+ }
+
+ /* --- Typography Styling (Oversized & Bold) --- */
+ h1 {
+ font-size: clamp(3rem, 8vw, 6rem); /* 최소 3rem ~ 최대 6rem */
+ color: var(--color-accent);
+ text-transform: uppercase;
+ margin-bottom: 20px;
+ line-height: 1.1;
+ }
+
+ h2 {
+ font-size: clamp(2rem, 5vw, 4rem);
+ border-bottom: var(--border-size) solid var(--color-accent);
+ padding-bottom: 8px;
+ margin-bottom: 30px;
+ display: inline-block; /* 블록 레벨에서 깔끔하게 */
+ }
+
+ h3 {
+ font-size: clamp(1.4rem, 3vw, 2rem);
+ color: var(--color-accent);
+ margin-bottom: 10px;
+ }
+
+ p {
+ margin-bottom: 25px;
+ font-size: 1.1rem;
+ }
+
+ /* --- Components --- */
+ a {
+ text-decoration: none;
+ color: var(--color-accent);
+ border-bottom: 2px dashed var(--color-accent); /* 기본 밑줄 스타일 */
+ transition: all 0.1s ease-out;
+ }
+
+ a:hover {
+ background-color: rgba(255, 59, 0, 0.1);
+ border-bottom: 3px solid var(--color-accent); /* 호버 시 두께 증가 */
+ }
+
+ /* --- HEADER & NAV (Asymmetric/Rotated feel) --- */
+ header {
+ background-color: rgba(255, 59, 0, 0.1); /* 약간의 색상 오버레이 */
+ padding: 30px var(--space-gap);
+ border-bottom: var(--border-size) solid var(--color-accent);
+ }
+
+ .nav-content {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ max-width: 1400px; /* 전체 컨테이너보다 약간 작게 설정하여 중앙 집중 느낌 */
+ margin: 0 auto;
+ }
+
+ .logo h1 {
+ font-size: clamp(2rem, 6vw, 3.5rem);
+ margin-bottom: 0;
+ line-height: 1;
+ color: var(--color-secondary); /* 로고는 흰색으로 강조 */
+ }
+
+ nav ul {
+ list-style: none;
+ display: flex;
+ gap: 48px; /* 메뉴 항목 간격 */
+ }
+
+ nav a {
+ font-size: 1.2rem;
+ text-transform: uppercase;
+ padding: 5px 0;
+ }
+
+ /* --- UGC REVIEW CARD (Brutalist Style) --- */
+ .review-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+ gap: 48px; /* 카드 간격 */
+ padding-top: 20px;
+ }
+
+ .review-card {
+ border: var(--border-size) solid var(--color-primary); /* 기본 검정 테두리 */
+ background-color: rgba(255, 255, 255, 0.03); /* 아주 미묘한 흰색 배경 */
+ padding: 30px;
+ transition: transform 0.3s ease;
+ position: relative;
+ /* 의도적인 기울임 (Skew) 적용 */
+ transform: skewX(-2deg);
+ }
+
+ .review-card:hover {
+ transform: skewX(-1deg) scale(1.02); /* 호버 시 살짝 각도를 줄이고 확대 */
+ box-shadow: 8px 8px 0 var(--color-accent); /* 강렬한 그림자 */
+ }
+
+ /* 별점 스타일링 (CSS로 구현) */
+ .rating {
+ margin: 15px 0;
+ display: flex;
+ gap: 4px;
+ }
+
+ .star {
+ font-size: 1.5rem;
+ color: #ffc300; /* 별의 황금빛 */
+ text-shadow: 0 0 4px rgba(255, 195, 0, 0.8);
+ }
+
+ /* UGC 내부 요소 재정렬 (기울임 보정) */
+ .review-card h3 {
+ transform: skewX(2deg); /* 카드 자체의 기울기를 상쇄시키며 더 강조 */
+ }
+
+ .review-meta {
+ font-size: 0.9rem;
+ color: #aaaaaa;
+ margin-top: 15px;
+ border-top: 1px dashed rgba(255, 255, 255, 0.3);
+ padding-top: 10px;
+ transform: skewX(2deg); /* 메타 정보에도 기울기 적용 */
+ }
+
+ /* --- HERO SECTION (Extreme Brutalist) --- */
+ #hero {
+ text-align: center;
+ padding: 150px var(--space-gap); /* 더 큰 패딩 */
+ border-bottom: var(--border-size) solid var(--color-accent);
+ /* 의도적인 비대칭 블록 느낌을 주기 위해 약간의 배경 왜곡 시도 */
+ background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(255, 59, 0, 0.1));
+ }
+
+ #hero h1 {
+ font-size: clamp(4rem, 10vw, 8rem); /* 더 크게 */
+ margin-bottom: 15px;
+ text-shadow: 0 6px var(--color-accent); /* 강한 그림자 */
+ }
+
+ #hero p {
+ font-size: clamp(1.3rem, 4vw, 1.8rem);
+ max-width: 900px;
+ margin: 0 auto 40px auto;
+ color: #cccccc; /* 메인 타이틀보다 살짝 어둡게 */
+ }
+
+ /* --- CALL TO ACTION BLOCK (Asymmetry & Rotation) --- */
+ .cta-block {
+ display: flex;
+ justify-content: space-between;
+ gap: 48px;
+ padding: 72px var(--space-gap);
+ align-items: center;
+ /* 비대칭 배치 시도 - 왼쪽으로 치우치게 */
+ margin-left: -50px; /* 컨테이너보다 왼쪽으로 50px 빼냄 */
+ }
+
+ .cta-content {
+ flex: 2;
+ max-width: 60%;
+ }
+ 
+ .cta-visual {
+ flex: 1;
+ min-height: 300px; /* 높이 확보 */
+ border: var(--border-size) solid var(--color-accent);
+ background: repeating-linear-gradient(
+ 45deg, 
+ var(--color-primary), 
+ var(--color-primary) 10px, 
+ rgba(255, 59, 0, 0.1) 10px, 
+ rgba(255, 59, 0, 0.1) 20px
+ );
+ /* 시각적 회전 (Rotation) */
+ transform: rotate(-3deg); 
+ }
+
+ .cta-content h2 {
+ margin-bottom: 20px;
+ border-color: var(--color-accent); /* CTA 타이틀 강조 */
+ }
+
+
+ /* --- FOOTER --- */
+ footer {
+ background-color: rgba(255, 59, 0, 0.15); /* 강렬한 오버레이 */
+ padding: 30px var(--space-gap);
+ border-top: var(--border-size) solid var(--color-accent);
+ text-align: center;
+ }
+
+ footer p {
+ font-size: 0.9rem;
+ margin-bottom: 5px;
+ }
+
+
+ /* ========================================= */
+ /* --- RESPONSIVE DESIGN (Mobile Adaptation) --- */
+ /* ========================================= */
+ @media (max-width: 1024px) {
+ .cta-block {
+ flex-direction: column; /* 수직 배열로 변경 */
+ margin-left: 0; /* 왼쪽 밀림 제거 */
+ }
+
+ .cta-visual {
+ order: -1; /* 시각적 요소가 먼저 오도록 순서 조정 */
+ transform: rotate(2deg); /* 모바일에서는 약간 양의 각도로 회전 */
+ width: 80%; /* 너비 확보 */
+ margin-bottom: 30px;
+ }
+
+ .cta-content {
+ max-width: 100%;
+ }
+ }
+
+ @media (max-width: 768px) {
+ /* 폰트 사이즈 조정 */
+ h1 {
+ font-size: clamp(2.5rem, 10vw, 4.5rem);
+ }
+ h2 {
+ font-size: clamp(1.7rem, 6vw, 3rem);
+ }
+
+ /* 섹션 간격 축소 */
+ section {
+ padding: 50px var(--space-gap);
+ }
+ .section-gap {
+ margin-bottom: 80px; /* 모바일에서 ᄃ더 타이ᄐ트파ᄀ게 */
+ }
+ }
+
+
+ /* --- MOBILE NAVIGATION (Hamburger Menu) --- */
+ nav {
+ display: none; /* 기본적으로 숨김 */
+ position: absolute;
+ top: 85px; /* 헤더 높이 + 약간의 여유 */
+ left: 0;
+ width: 100%;
+ background-color: var(--color-primary);
+ border-bottom: var(--border-size) solid var(--color-accent);
+ padding: 20px 0;
+ }
+
+ .nav-content {
+ flex-direction: column; /* 내부 요소도 수직 배열 */
+ gap: 15px;
+ padding: 20px var(--space-gap);
+ }
+
+ /* 햄버거 아이콘 스타일링 (CSS만으로 구현) */
+ .hamburger {
+ display: block; /* 모바일에서는 보이도록 설정 */
+ cursor: pointer;
+ width: 30px;
+ height: 25px;
+ position: relative;
+ z-index: 10; /* 메뉴 위에 떠 있도록 */
+ }
+
+ .hamburger span {
+ display: block;
+ background-color: var(--color-accent);
+ width: 100%;
+ height: 4px;
+ border-radius: 2px;
+ position: absolute;
+ left: 0;
+ transition: transform 0.3s ease, opacity 0.3s ease;
+ }
+
+ /* X 모양으로 변형 시 */
+ .hamburger.active span:nth-child(1) {
+ transform: translateY(11px) rotate(45deg); /* 대각선 위로 이동 및 회전 */
+ }
+ .hamburger.active span:nth-child(2) {
+ opacity: 0; /* 가운데 선 투명화 */
+ }
+ .hamburger.active span:nth-child(3) {
+ transform: translateY(-11px) rotate(-45deg); /* 대각선 아래로 이동 및 회전 */
+ }
+
+ /* JS를 이용해 이 클래ᅢ스를 토글 시 동작함 */
+ </style>
+  <meta property="og:title" content="글 목록 (2/2) · kanazawa-spots">
+  <meta property="og:description" content="kanazawa-spots에 올라온 글 목록입니다.">
+  <meta property="og:url" content="https://kanazawa-spots-guide.pbn-builder.xyz/posts-2.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <div class="container">
+    
+    <main>
+      <h1>글 목록</h1>
+      <p>전체 34개 · 2/2 페이지</p>
+      <ul class="post-list">
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0127.html">Kanazawa spots 안내로 보는 구글 신뢰 지수 모발이식 솔루션의 중요성</a>
+        <p class="post-item__summary">웹사이트의 신뢰도는 단순히 디자인의 영역을 넘어 전문적인 정보를 제공하는 능력에서 결정됩니다. Kanazawa spots 안내 글을 읽는 사용자들이 기대하는 것은 현장의 정확한 정보이듯, 의료 상담</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0331.html">Kanazawa spots 안내에서 배운 공덕 셔츠룸 추천정보 및 인원 구성 팁</a>
+        <p class="post-item__summary">셔츠룸을 방문하기 위해 필요한 충족 조건은 생각보다 구체적입니다. Kanazawa spots 안내 자료가 여행객에게 최적의 동선을 제시하듯, 공덕 지역의 시설을 이용할 때도 인원 규모와 목적에 부합</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0332.html">Kanazawa spots 안내로 알아보는 연남 유흥 추천정보 및 선택 기준</a>
+        <p class="post-item__summary">당신은 과연 오늘 밤 방문할 장소를 결정할 때 어떤 기준을 가지고 계십니까. 낯선 도시를 여행할 때 Kanazawa spots 안내를 펼쳐 들고 가장 평점이 높은 곳을 찾듯, 연남 지역에서 시간을 </p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0333.html">Kanazawa spots 안내 마곡 가라오케 추천정보 활용법</a>
+        <p class="post-item__summary">해외 관광 정보를 다루는 Kanazawa spots 안내 매체에서도 종종 언급되듯, 국내 지역 정보를 올바르게 선별하는 과정은 매우 중요합니다. 특히 마곡 지역의 유흥 업소를 찾을 때 정보의 신뢰도</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0334.html">Kanazawa spots 안내 마곡 유흥 추천정보 비교 분석</a>
+        <p class="post-item__summary">Kanazawa spots 안내 콘텐츠가 여행의 길잡이가 되듯, 마곡 지역의 밤문화를 즐기기 위해서도 적절한 기준 설정이 필요합니다. 오늘은 크게 두 가지 유형의 업소를 대조하여 본인에게 맞는 선택</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0335.html">Kanazawa spots 안내 합정 노래방 추천정보 예약 주의사항</a>
+        <p class="post-item__summary">Kanazawa spots 안내 가이드처럼 정갈한 여행 준비를 선호하는 분들이라면, 지역 내 노래방 방문 시에도 꼼꼼한 사전 준비가 동반되어야 합니다. 많은 이들이 실패하는 지점은 예약 절차를 간과</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0336.html">Kanazawa spots 안내 연남 클럽 추천정보 방문 체크리스트</a>
+        <p class="post-item__summary">Kanazawa spots 안내 매체에서 도시의 명소를 추천하듯, 연남 지역 클럽을 방문할 때도 장소의 특성을 파악하는 과정이 선행되어야 합니다. 위치와 접근성은 단순히 찾아가는 길을 넘어 밤의 흐</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0337.html">Kanazawa spots 안내로 찾아보는 합정 셔츠룸 추천정보와 이용 수칙</a>
+        <p class="post-item__summary">오랜만에 만난 친구들과 합정 근처에서 저녁 식사를 마친 뒤, 새로운 분위기의 장소를 찾기 위해 고민하는 경우가 많습니다. Kanazawa spots 안내처럼 낯선 곳을 탐색하는 즐거움이 있지만, 익</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0338.html">Kanazawa spots 안내로 알아보는 공덕 가라오케 추천정보와 적정 시간대</a>
+        <p class="post-item__summary">공덕 지역을 방문하는 이들 사이에는 가라오케는 항상 이른 저녁부터 북적일 것이라는 오해가 널리 퍼져 있습니다. 하지만 실제 운영 상황을 살펴보면 업종별로 피크 타임이 다르며, 이를 간과하면 만족스러</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0339.html">Kanazawa spots 안내가 알려주는 상수 마사지 추천정보와 인원 구성 전략</a>
+        <p class="post-item__summary">성공적인 마사지 경험을 위해서는 청결한 시설, 숙련된 관리사의 기술, 그리고 적절한 예약 시간이라는 세 가지 조건이 모두 충족되어야 합니다. 특히 상수 지역에서 휴식을 계획할 때 Kanazawa s</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0340.html">Kanazawa spots 안내로 분석하는 망원 노래방 추천정보와 선택 기준</a>
+        <p class="post-item__summary">여러분은 평소 노래방을 선택할 때 어떤 기준으로 업체를 결정하시나요? 음향 장비의 최신 상태를 중요하게 생각하는지, 아니면 방의 넓이나 전반적인 청결도를 먼저 보시는지 궁금합니다. Kanazawa </p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0341.html">Kanazawa spots 안내 및 홍대 노래방 추천정보 찾아가는 법</a>
+        <p class="post-item__summary">최근 유행하는 Kanazawa spots 안내 정보를 확인하다 보면 낯선 여행지를 탐색하는 즐거움이 크지만, 가까운 지역 내에서 즐길 거리를 찾는 것 역시 중요합니다. 홍대 지역에서 적절한 엔터테인</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/qa-001-pr262u.html">Kanazawa spots 안내</a>
+        <p class="post-item__summary">가나자와는 과거의 정취와 현대적인 예술이 조화롭게 어우러진 도시로 잘 알려져 있습니다. 일본의 전통 문화를 깊이 있게 체험할 수 있는 이곳은 많은 방문객에게 특별한 추억을 선사하는 곳입니다. 도시 </p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/review-001-y0ufdm.html">Kanazawa spots 안내 솔직 후기</a>
+        <p class="post-item__summary">가나자와는 일본의 전통적인 정취와 현대적인 예술 감각이 공존하는 매력적인 도시입니다. 이곳을 찾는 여행객들은 보통 역사적인 건축물과 잘 가꾸어진 정원을 둘러보며 휴식을 취하곤 합니다. 도시 곳곳에는</p>
+      </li>
+      </ul>
+    <nav class="pager">
+      <a class="pager__link" href="posts.html">1</a>
+      <span class="pager__current">2</span>
+    </nav>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글 목록 (1/2) · kanazawa-spots</title>
+  <meta name="description" content="kanazawa-spots에 올라온 글 목록입니다.">
+  <link rel="canonical" href="https://kanazawa-spots-guide.pbn-builder.xyz/posts.html">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+ /* --- CSS Variables & Base Setup (Neon Void Theme) --- */
+ :root {
+ --color-primary: #000000;
+ --color-secondary: #ffffff;
+ --color-accent: #ff3b00; /* 강렬한 주황 레드 */
+ --font-raw: 'Impact', sans-serif;
+ --border-size: 4px;
+ }
+
+ /* --- Global Reset & Typography (Raw Type Focus) --- */
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+
+ body {
+ background-color: var(--color-primary);
+ color: var(--color-secondary);
+ font-family: var(--font-raw);
+ line-height: 1.35; /* 딱딱한 느낌을 살리기 위해 약간 단축 */
+ overflow-x: hidden; /* 가로 스크롤 방지 (필수) */
+ }
+
+ /* --- Layout & Spacing --- */
+ .container {
+ width: 100%;
+ padding: 72px var(--space-gap); /* 공간 설정 적용 */
+ }
+
+ section {
+ padding: 72px 0; /* 섹션 간 패딩 통일 */
+ }
+
+ /* Section Gap (주요 블록 간의 간격) - 더 강하게 밀어냄 */
+ .section-gap {
+ min-height: calc(120px + 72px); /* 기본 padding 72px + 여유분 */
+ margin-bottom: 120px; /* 섹션 하댠 간격 */
+ }
+
+ /* --- Typography Styling (Oversized & Bold) --- */
+ h1 {
+ font-size: clamp(3rem, 8vw, 6rem); /* 최소 3rem ~ 최대 6rem */
+ color: var(--color-accent);
+ text-transform: uppercase;
+ margin-bottom: 20px;
+ line-height: 1.1;
+ }
+
+ h2 {
+ font-size: clamp(2rem, 5vw, 4rem);
+ border-bottom: var(--border-size) solid var(--color-accent);
+ padding-bottom: 8px;
+ margin-bottom: 30px;
+ display: inline-block; /* 블록 레벨에서 깔끔하게 */
+ }
+
+ h3 {
+ font-size: clamp(1.4rem, 3vw, 2rem);
+ color: var(--color-accent);
+ margin-bottom: 10px;
+ }
+
+ p {
+ margin-bottom: 25px;
+ font-size: 1.1rem;
+ }
+
+ /* --- Components --- */
+ a {
+ text-decoration: none;
+ color: var(--color-accent);
+ border-bottom: 2px dashed var(--color-accent); /* 기본 밑줄 스타일 */
+ transition: all 0.1s ease-out;
+ }
+
+ a:hover {
+ background-color: rgba(255, 59, 0, 0.1);
+ border-bottom: 3px solid var(--color-accent); /* 호버 시 두께 증가 */
+ }
+
+ /* --- HEADER & NAV (Asymmetric/Rotated feel) --- */
+ header {
+ background-color: rgba(255, 59, 0, 0.1); /* 약간의 색상 오버레이 */
+ padding: 30px var(--space-gap);
+ border-bottom: var(--border-size) solid var(--color-accent);
+ }
+
+ .nav-content {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ max-width: 1400px; /* 전체 컨테이너보다 약간 작게 설정하여 중앙 집중 느낌 */
+ margin: 0 auto;
+ }
+
+ .logo h1 {
+ font-size: clamp(2rem, 6vw, 3.5rem);
+ margin-bottom: 0;
+ line-height: 1;
+ color: var(--color-secondary); /* 로고는 흰색으로 강조 */
+ }
+
+ nav ul {
+ list-style: none;
+ display: flex;
+ gap: 48px; /* 메뉴 항목 간격 */
+ }
+
+ nav a {
+ font-size: 1.2rem;
+ text-transform: uppercase;
+ padding: 5px 0;
+ }
+
+ /* --- UGC REVIEW CARD (Brutalist Style) --- */
+ .review-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+ gap: 48px; /* 카드 간격 */
+ padding-top: 20px;
+ }
+
+ .review-card {
+ border: var(--border-size) solid var(--color-primary); /* 기본 검정 테두리 */
+ background-color: rgba(255, 255, 255, 0.03); /* 아주 미묘한 흰색 배경 */
+ padding: 30px;
+ transition: transform 0.3s ease;
+ position: relative;
+ /* 의도적인 기울임 (Skew) 적용 */
+ transform: skewX(-2deg);
+ }
+
+ .review-card:hover {
+ transform: skewX(-1deg) scale(1.02); /* 호버 시 살짝 각도를 줄이고 확대 */
+ box-shadow: 8px 8px 0 var(--color-accent); /* 강렬한 그림자 */
+ }
+
+ /* 별점 스타일링 (CSS로 구현) */
+ .rating {
+ margin: 15px 0;
+ display: flex;
+ gap: 4px;
+ }
+
+ .star {
+ font-size: 1.5rem;
+ color: #ffc300; /* 별의 황금빛 */
+ text-shadow: 0 0 4px rgba(255, 195, 0, 0.8);
+ }
+
+ /* UGC 내부 요소 재정렬 (기울임 보정) */
+ .review-card h3 {
+ transform: skewX(2deg); /* 카드 자체의 기울기를 상쇄시키며 더 강조 */
+ }
+
+ .review-meta {
+ font-size: 0.9rem;
+ color: #aaaaaa;
+ margin-top: 15px;
+ border-top: 1px dashed rgba(255, 255, 255, 0.3);
+ padding-top: 10px;
+ transform: skewX(2deg); /* 메타 정보에도 기울기 적용 */
+ }
+
+ /* --- HERO SECTION (Extreme Brutalist) --- */
+ #hero {
+ text-align: center;
+ padding: 150px var(--space-gap); /* 더 큰 패딩 */
+ border-bottom: var(--border-size) solid var(--color-accent);
+ /* 의도적인 비대칭 블록 느낌을 주기 위해 약간의 배경 왜곡 시도 */
+ background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(255, 59, 0, 0.1));
+ }
+
+ #hero h1 {
+ font-size: clamp(4rem, 10vw, 8rem); /* 더 크게 */
+ margin-bottom: 15px;
+ text-shadow: 0 6px var(--color-accent); /* 강한 그림자 */
+ }
+
+ #hero p {
+ font-size: clamp(1.3rem, 4vw, 1.8rem);
+ max-width: 900px;
+ margin: 0 auto 40px auto;
+ color: #cccccc; /* 메인 타이틀보다 살짝 어둡게 */
+ }
+
+ /* --- CALL TO ACTION BLOCK (Asymmetry & Rotation) --- */
+ .cta-block {
+ display: flex;
+ justify-content: space-between;
+ gap: 48px;
+ padding: 72px var(--space-gap);
+ align-items: center;
+ /* 비대칭 배치 시도 - 왼쪽으로 치우치게 */
+ margin-left: -50px; /* 컨테이너보다 왼쪽으로 50px 빼냄 */
+ }
+
+ .cta-content {
+ flex: 2;
+ max-width: 60%;
+ }
+ 
+ .cta-visual {
+ flex: 1;
+ min-height: 300px; /* 높이 확보 */
+ border: var(--border-size) solid var(--color-accent);
+ background: repeating-linear-gradient(
+ 45deg, 
+ var(--color-primary), 
+ var(--color-primary) 10px, 
+ rgba(255, 59, 0, 0.1) 10px, 
+ rgba(255, 59, 0, 0.1) 20px
+ );
+ /* 시각적 회전 (Rotation) */
+ transform: rotate(-3deg); 
+ }
+
+ .cta-content h2 {
+ margin-bottom: 20px;
+ border-color: var(--color-accent); /* CTA 타이틀 강조 */
+ }
+
+
+ /* --- FOOTER --- */
+ footer {
+ background-color: rgba(255, 59, 0, 0.15); /* 강렬한 오버레이 */
+ padding: 30px var(--space-gap);
+ border-top: var(--border-size) solid var(--color-accent);
+ text-align: center;
+ }
+
+ footer p {
+ font-size: 0.9rem;
+ margin-bottom: 5px;
+ }
+
+
+ /* ========================================= */
+ /* --- RESPONSIVE DESIGN (Mobile Adaptation) --- */
+ /* ========================================= */
+ @media (max-width: 1024px) {
+ .cta-block {
+ flex-direction: column; /* 수직 배열로 변경 */
+ margin-left: 0; /* 왼쪽 밀림 제거 */
+ }
+
+ .cta-visual {
+ order: -1; /* 시각적 요소가 먼저 오도록 순서 조정 */
+ transform: rotate(2deg); /* 모바일에서는 약간 양의 각도로 회전 */
+ width: 80%; /* 너비 확보 */
+ margin-bottom: 30px;
+ }
+
+ .cta-content {
+ max-width: 100%;
+ }
+ }
+
+ @media (max-width: 768px) {
+ /* 폰트 사이즈 조정 */
+ h1 {
+ font-size: clamp(2.5rem, 10vw, 4.5rem);
+ }
+ h2 {
+ font-size: clamp(1.7rem, 6vw, 3rem);
+ }
+
+ /* 섹션 간격 축소 */
+ section {
+ padding: 50px var(--space-gap);
+ }
+ .section-gap {
+ margin-bottom: 80px; /* 모바일에서 ᄃ더 타이ᄐ트파ᄀ게 */
+ }
+ }
+
+
+ /* --- MOBILE NAVIGATION (Hamburger Menu) --- */
+ nav {
+ display: none; /* 기본적으로 숨김 */
+ position: absolute;
+ top: 85px; /* 헤더 높이 + 약간의 여유 */
+ left: 0;
+ width: 100%;
+ background-color: var(--color-primary);
+ border-bottom: var(--border-size) solid var(--color-accent);
+ padding: 20px 0;
+ }
+
+ .nav-content {
+ flex-direction: column; /* 내부 요소도 수직 배열 */
+ gap: 15px;
+ padding: 20px var(--space-gap);
+ }
+
+ /* 햄버거 아이콘 스타일링 (CSS만으로 구현) */
+ .hamburger {
+ display: block; /* 모바일에서는 보이도록 설정 */
+ cursor: pointer;
+ width: 30px;
+ height: 25px;
+ position: relative;
+ z-index: 10; /* 메뉴 위에 떠 있도록 */
+ }
+
+ .hamburger span {
+ display: block;
+ background-color: var(--color-accent);
+ width: 100%;
+ height: 4px;
+ border-radius: 2px;
+ position: absolute;
+ left: 0;
+ transition: transform 0.3s ease, opacity 0.3s ease;
+ }
+
+ /* X 모양으로 변형 시 */
+ .hamburger.active span:nth-child(1) {
+ transform: translateY(11px) rotate(45deg); /* 대각선 위로 이동 및 회전 */
+ }
+ .hamburger.active span:nth-child(2) {
+ opacity: 0; /* 가운데 선 투명화 */
+ }
+ .hamburger.active span:nth-child(3) {
+ transform: translateY(-11px) rotate(-45deg); /* 대각선 아래로 이동 및 회전 */
+ }
+
+ /* JS를 이용해 이 클래ᅢ스를 토글 시 동작함 */
+ </style>
+  <meta property="og:title" content="글 목록 (1/2) · kanazawa-spots">
+  <meta property="og:description" content="kanazawa-spots에 올라온 글 목록입니다.">
+  <meta property="og:url" content="https://kanazawa-spots-guide.pbn-builder.xyz/posts.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <div class="container">
+    
+    <main>
+      <h1>글 목록</h1>
+      <p>전체 34개 · 1/2 페이지</p>
+      <ul class="post-list">
+      <li class="post-item">
+        <a class="post-item__link" href="posts/field_note-002-y0ufdm.html">Kanazawa spots 안내 현장에서 놓치기 쉬운 포인트를 기록해봤다</a>
+        <p class="post-item__summary">가나자와는 오랜 역사를 간직한 도시로 구석구석 정취가 가득합니다. 하지만 유명한 관광지만 따라다니다 보면 정작 이곳만의 섬세한 매력을 충분히 느끼지 못할 때가 많습니다. 단순히 명소를 방문하는 것을</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0019.html">Kanazawa spots 안내 및 동대문 풋쌤 동대문점 마사지 정보</a>
+        <p class="post-item__summary">여행지에서 지친 몸을 이끌고 쾌적한 휴식을 취하려면 몇 가지 필수적인 충족 조건을 따져봐야 합니다. 접근성이 용이한 위치인지, 서비스의 질이 보장되는지, 그리고 개인의 상태에 맞는 맞춤형 프로그램이</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0020.html">Kanazawa spots 안내처럼 살펴보는 마포/합정 인디 소셜 라운지 가이드 및 파티 기준</a>
+        <p class="post-item__summary">특별한 사람들과 프라이빗한 시간을 보내고 싶은데 어디서부터 준비해야 할지 막막한 적이 있으신가요? Kanazawa spots 안내가 지역의 숨은 명소를 발굴하듯, 마포와 합정 일대에서도 독특한 감성</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0021.html">Kanazawa spots 안내 및 도메인 지수 탈모 방지 가이드</a>
+        <p class="post-item__summary">가나자와를 여행하며 도시의 미학을 경험하듯, 웹사이트의 건전성을 유지하는 일은 세심한 관리가 필요합니다. Kanazawa spots 안내를 통해 지역 정보를 탐색하는 것과 마찬가지로, 웹 환경에서도</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0022.html">Kanazawa spots 안내와 검색엔진 응급수술 가이드</a>
+        <p class="post-item__summary">가나자와의 고즈넉한 풍경을 찾는 여행자들에게 Kanazawa spots 안내가 중요한 지표가 되듯, 웹사이트 운영자들에게도 검색 환경에서의 위치 파악은 핵심입니다. 갑작스러운 노출 변화는 당혹스럽지</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0023.html">Kanazawa spots 안내와 로컬 럭셔리 밤문화 가이드</a>
+        <p class="post-item__summary">여행지의 매력을 찾아 떠나는 Kanazawa spots 안내 정보가 방문객들에게 유용한 지도라면, 우리 주변의 밤문화 또한 적절한 정보를 알고 접근하는 것이 중요합니다. 많은 이들이 경험 부족이나 </p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0024.html">Kanazawa spots 안내와 VIP 단체 모임 가이드</a>
+        <p class="post-item__summary">이국적인 여행지에서 Kanazawa spots 안내를 찾듯, 우리 주변에서도 소중한 사람들과 함께할 완벽한 장소를 찾는 것은 즐거운 숙제입니다. 특히 단체 모임의 경우 장소의 격식과 접근성, 그리고</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0025.html">Kanazawa spots 안내 및 콘텐츠 급수 정화 정보 활용법</a>
+        <p class="post-item__summary">디지털 환경에서 운영자가 겪는 가장 큰 난관은 웹사이트의 신뢰도를 어떻게 확보하느냐는 것입니다. 특정 도메인의 품질이 하락하면 아무리 양질의 글을 써도 노출이 되지 않는 현상이 발생합니다. 이런 상</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0026.html">Kanazawa spots 안내와 마포 유흥 투명 정찰제 가격 정보 디렉토리의 이해</a>
+        <p class="post-item__summary">흔히 유흥 서비스의 가격이 비공개적이라는 오해를 가지고 현장을 찾는 경우가 많습니다. 하지만 최근 업계에서는 정찰제를 통해 신뢰를 회복하려는 노력이 이어지고 있습니다. 정보가 투명하게 공개될수록 소</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0027.html">Kanazawa spots 안내와 마포 코인노래방 방음 시설 비교 가이드 확인하기</a>
+        <p class="post-item__summary">완벽한 노래방을 선택하기 위해서는 방음 성능, 최신 곡 업데이트 주기, 그리고 쾌적한 내부 공조 상태가 충분히 충족되어야 합니다. 특히 소음 진동 저감 설계가 제대로 된 곳은 음악에 온전히 집중할 </p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0028.html">Kanazawa spots 안내와 마포 셔츠룸 리얼 후기 소셜 마케팅 가이드 핵심</a>
+        <p class="post-item__summary">혹시 검증되지 않은 정보 때문에 매장 선택을 망설이고 계신 적이 있습니까? 수많은 광고성 글 속에서 진짜 가치를 찾아내는 일은 소비자의 필수 역량이 되었습니다. 명확한 기준을 세우지 않으면 매번 불</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0029.html">Kanazawa spots 안내 마포 셔츠룸 예약 시 눈탱이 피하는 법 가이드</a>
+        <p class="post-item__summary">해외 여행지의 정보를 확인하는 것만큼이나 국내 유흥 및 접대 서비스 환경을 정확히 파악하는 것이 중요합니다. 특히 대도시 중심지에서 이루어지는 업소 이용 시, 정보 부족으로 인해 금전적 손실을 겪는</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0030.html">Kanazawa spots 안내 구글 틈새 키워드 트래픽 외환 거래 전략 활용</a>
+        <p class="post-item__summary">여행지 정보를 찾는 Kanazawa spots 안내 방식과 효율적인 자산 증식 전략은 의외로 유사한 논리를 가지고 있습니다. 검색 엔진의 트래픽 흐름을 분석하여 유효한 정보를 가려내는 눈은 투자의 </p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0031.html">Kanazawa spots 안내 셔츠룸 예약 성공을 위한 핵심 가이드</a>
+        <p class="post-item__summary">여행을 떠나기 전 Kanazawa spots 안내 페이지를 읽고 동선을 짜는 것과 예약 업무는 비슷한 준비 과정이 필요합니다. 많은 사람들이 예약 단계에서 실패하는 가장 큰 지점은 업소의 운영 방침</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0032.html">Kanazawa spots 안내 마포 단체 회식용 대형 룸 노래방 가격 정보 확인</a>
+        <p class="post-item__summary">여행 정보를 찾는 Kanazawa spots 안내 수준의 꼼꼼함이 비즈니스 회식 장소 선정에도 요구됩니다. 특히 대규모 인원이 이동하는 단체 회식의 경우 장소의 위치와 접근성은 행사의 성패를 결정짓</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0033.html">Kanazawa spots 안내 마포 홍대 단체 가라오케 예약 가이드 합정 가라오케 정보</a>
+        <p class="post-item__summary">직장 동료나 지인들과 함께 마포 홍대 인근에서 즐거운 저녁 시간을 계획할 때 가장 먼저 고민되는 것이 바로 장소 선정입니다. 인원수가 많아질수록 쾌적한 환경과 음향 시설을 갖춘 공간을 확보하는 것은</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0034.html">Kanazawa spots 안내 구글 알고리즘 고신용 도메인 보증 카드 발급 관련 정보</a>
+        <p class="post-item__summary">많은 이들이 웹사이트 운영과 도메인 신뢰도를 동일한 개념으로 착각하여 초기 단계부터 혼란을 겪곤 합니다. 단순히 도메인을 보유하는 것만으로는 검색 엔진의 알고리즘에서 높은 점수를 기대하기 어렵습니다</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260719-0035.html">Kanazawa spots 안내 구글 인덱싱 속도 초고속 광회선 대역폭 최적화 가이드</a>
+        <p class="post-item__summary">웹사이트가 검색 결과에 빠르게 노출되기 위해서는 안정적인 서버 성능과 최적화된 인덱싱 구조가 필수적으로 충족되어야 합니다. 이는 단순히 페이지를 생성하는 것이 아니라 서버 대역폭과 응답 속도가 조화</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0125.html">Kanazawa spots 안내를 통한 구글 봇 정밀 검진 및 크롤 버짓 밀착 간호 전략</a>
+        <p class="post-item__summary">디지털 환경에서 웹사이트의 가시성은 콘텐츠의 질만큼이나 기술적 상태에 달려 있습니다. 특히 검색 엔진이 귀하의 페이지를 얼마나 자주 방문하고 데이터를 수집하는지는 운영의 핵심 지표입니다. 운영 효율</p>
+      </li>
+      <li class="post-item">
+        <a class="post-item__link" href="posts/gemini-coverage-20260721-0126.html">Kanazawa spots 안내와 함께 비교하는 합정 셔츠룸 단골들이 뽑은 핫플 매거진</a>
+        <p class="post-item__summary">여행지의 매력과 도시의 밤 문화를 즐기는 방식은 서로 다른 매력을 지니고 있습니다. Kanazawa spots 안내를 통해 얻는 정보는 고즈넉한 일본의 정취를 강조하는 반면, 도심 속 특별한 시간을</p>
+      </li>
+      </ul>
+    <nav class="pager">
+      <span class="pager__current">1</span>
+      <a class="pager__link" href="posts-2.html">2</a>
+    </nav>
+    </main>
+  </div>
+</body>
+</html>
